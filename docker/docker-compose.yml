@@ -1,0 +1,64 @@
+services:
+  # ─────────────────────────────────────────────
+  # Orion Agent (one-shot query)
+  #   docker compose -f docker/docker-compose.yml run --rm orion-agent -m "Hello"
+  # ─────────────────────────────────────────────
+  orion-agent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: docker.io/varunnegi07/orion:latest
+    container_name: orion-agent
+    profiles:
+      - agent
+    # Uncomment to access host network; leave commented unless needed.
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
+    volumes:
+      - ./data:/root/.orion
+    entrypoint: ["orion", "agent"]
+    stdin_open: true
+    tty: true
+
+  # ─────────────────────────────────────────────
+  # Orion Gateway (Long-running Bot)
+  #   docker compose -f docker/docker-compose.yml --profile gateway up
+  # ─────────────────────────────────────────────
+  orion-gateway:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: docker.io/varunnegi07/orion:latest
+    container_name: orion-gateway
+    restart: unless-stopped
+    profiles:
+      - gateway
+    # Uncomment to access host network; leave commented unless needed.
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
+    volumes:
+      - ./data:/root/.orion
+
+  # ─────────────────────────────────────────────
+  # Orion Launcher (Web Console + Gateway)
+  #   docker compose -f docker/docker-compose.yml --profile launcher up
+  # ─────────────────────────────────────────────
+  orion-launcher:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.launcher
+    image: docker.io/varunnegi07/orion:launcher
+    container_name: orion-launcher
+    restart: unless-stopped
+    profiles:
+      - launcher
+    environment:
+      - ORION_GATEWAY_HOST=0.0.0.0
+      # Set a fixed dashboard token instead of a random one each restart.
+      # If not set, a random token is generated and printed to the console on startup.
+      #- ORION_LAUNCHER_TOKEN=your-secret-token-here
+    ports:
+      - "18800:18800"
+      - "18790:18790"
+    volumes:
+      - ./data:/root/.orion

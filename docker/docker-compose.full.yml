@@ -1,0 +1,44 @@
+services:
+  # ─────────────────────────────────────────────
+  # Orion Agent (one-shot query) - Full MCP Support
+  #   docker compose -f docker/docker-compose.full.yml run --rm orion-agent -m "Hello"
+  # ─────────────────────────────────────────────
+  orion-agent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.full
+    container_name: orion-agent-full
+    profiles:
+      - agent
+    volumes:
+      - ../config/config.json:/root/.orion/config.json:ro
+      - orion-workspace:/root/.orion/workspace
+      - orion-npm-cache:/root/.npm # npm cache for faster MCP server installs
+    entrypoint: ["orion", "agent"]
+    stdin_open: true
+    tty: true
+
+  # ─────────────────────────────────────────────
+  # Orion Gateway (Long-running Bot) - Full MCP Support
+  #   docker compose -f docker/docker-compose.full.yml --profile gateway up
+  # ─────────────────────────────────────────────
+  orion-gateway:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.full
+    container_name: orion-gateway-full
+    restart: unless-stopped
+    profiles:
+      - gateway
+    volumes:
+      # Configuration file
+      - ../config/config.json:/root/.orion/config.json:ro
+      # Persistent workspace (sessions, memory, logs)
+      - orion-workspace:/root/.orion/workspace
+      # NPM cache for faster MCP server installs
+      - orion-npm-cache:/root/.npm
+    command: ["gateway"]
+
+volumes:
+  orion-workspace:
+  orion-npm-cache: # Cache npm packages to speed up MCP server installations

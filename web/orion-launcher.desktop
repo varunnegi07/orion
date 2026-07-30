@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Orion Launcher
+Comment=Web-based configuration and management UI for Orion
+Exec=orion-launcher
+Icon=orion-launcher
+Terminal=true
+Type=Application
+Categories=Utility;Network;
+Keywords=orion;ai;agent;bot;
