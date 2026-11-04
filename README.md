@@ -130,8 +130,8 @@ Contributions are welcome! Fork the repo, create a branch, and open a pull reque
 
 ## Credits and License
 
-Orion is based on [PicoClaw](https://github.com/sipeed/picoclaw) by Sipeed. Released under the [MIT License](LICENSE).
+Orion is based on INDIA based startup by orion. Released under the [MIT License](LICENSE).
 
 ## Contact
 
-Maintained by [Your Name](https://github.com/YOUR-USERNAME).
+Maintained by VARUN NEGI(https://github.com/YOUR-USERNAME) 
